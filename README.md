@@ -6,12 +6,24 @@ Node.Js must be installed
 The RSK KMS (Key Management Service)
 
 1) npm install
+
 2) truffle.cmd develop
-![Alt text](https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Develop.PNG?raw=true "Truffle Develop")
+
+  <img src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Develop.PNG" 
+  data-canonical-src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Develop.PNG" width="650" height="550" />
+
 3) truffle compile 
-![Alt text](https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Compile.PNG?raw=true "Truffle Compile")
-3) truffle test 
-![Alt text](https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Test.PNG?raw=true "Truffle Test")
-3) truffle migrate 
-![Alt text](https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Migrate.PNG?raw=true "Truffle Migrate")
+
+  <img src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Compile.PNG" 
+  data-canonical-src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Compile.PNG" width="650" height="250" />
+
+4) truffle test 
+
+  <img src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Test.PNG" 
+  data-canonical-src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Test.PNG" width="650" height="450" />
+
+5) truffle migrate 
+
+  <img src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Migrate.PNG" 
+  data-canonical-src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Migrate.PNG" width="650" height="450" />
 
