@@ -6,6 +6,7 @@ using Nethereum.Web3;
 using Nethereum.RPC.Eth.DTOs;
 using RSKKMS.Lib.Security;
 using Nethereum.Contracts.ContractHandlers;
+using System.Diagnostics;
 
 namespace RSKKMS.Console
 {
@@ -20,6 +21,8 @@ namespace RSKKMS.Console
         {
             string key = "aesKey";
             string value = "testing";
+
+            Stopwatch stopwatch = new Stopwatch();
 
             System.Console.WriteLine("Trying to pull the RSA certificate from the local store using the Thumbprint");
 
@@ -45,11 +48,17 @@ namespace RSKKMS.Console
             Web3 web3 = new Web3(account, url);
 
             // Get the balance
+            stopwatch.Start();
             var weiBalance = AccountHelper.GetBalance(web3, account);
             var etherAmount = Web3.Convert.FromWei(weiBalance.Value);
+            stopwatch.Stop();
+
             System.Console.WriteLine($"Account Balance: {etherAmount}");
+            System.Console.WriteLine($"Time take to fetch the balance:" +
+                $" {stopwatch.Elapsed.Seconds} seconds");
 
             System.Console.WriteLine("Deploying the Iterable Mapping Library");
+            stopwatch.Start();
 
             // Deploy Iterable Mapping Library
             TransactionReceipt transactionReceiptDeployment;
@@ -60,15 +69,23 @@ namespace RSKKMS.Console
                 out transactionReceiptDeployment,
                 out contractAddress,
                 out contractHandler);
+            stopwatch.Stop();
 
-            System.Console.WriteLine($"Iterable Mapping Contarct Address: {contractAddress}");
+            System.Console.WriteLine($"Iterable Mapping Contarct Address: " +
+                $"{contractAddress}");
+            System.Console.WriteLine($"Time taken to deploy the Iterable mapping:" +
+                $" {stopwatch.Elapsed.Seconds} seconds");
 
             System.Console.WriteLine("Deploying the RSK KMS Contract");
 
             // Deploy the RSK Contract
+            stopwatch.Start();
             contractHandler = RSKContractHelper.DeployRSKKeyManagmentContract(web3,
                 transactionReceiptDeployment,
                 out contractAddress);
+            stopwatch.Stop();
+            System.Console.WriteLine($"Time taken to deploy the RSK Contract: " +
+                $"{stopwatch.Elapsed.Seconds} seconds");
 
             System.Console.WriteLine("Trying to set a value in RSK KMS Contract");
 
@@ -88,11 +105,15 @@ namespace RSKKMS.Console
 
             setItemRequest.Gas = estimate.Value;
 
+            stopwatch.Start();
             var setItemFunctionTxnReceipt = contractHandler
                 .SendRequestAndWaitForReceiptAsync(setItemRequest)
                 .ConfigureAwait(false)
                 .GetAwaiter()
                 .GetResult();
+            stopwatch.Stop();
+            System.Console.WriteLine($"Time taken to set the KMS Key Item: " +
+                $"{stopwatch.Elapsed.Seconds} seconds");
 
             System.Console.WriteLine("Trying to get a value from the RSK KMS Contract");
 
@@ -103,11 +124,15 @@ namespace RSKKMS.Console
                 FromAddress = account.Address
             };
 
+            stopwatch.Start();
             var getItemResponse = contractHandler
                 .QueryAsync<GetItemFunction, string>(getItemRequest)
                 .ConfigureAwait(false)
                 .GetAwaiter()
                 .GetResult();
+            stopwatch.Stop();
+            System.Console.WriteLine($"Time taken to get the KMS Key Item: " +
+                $"{stopwatch.Elapsed.Seconds} seconds");
 
             if (!string.IsNullOrEmpty(getItemResponse))
             {
