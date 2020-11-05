@@ -136,13 +136,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RSKKMS.Lib\RSKKMS.Lib.csproj">
-      <Project>{16fa22d2-43f8-4615-a650-918718e24380}</Project>
-      <Name>RSKKMS.Lib</Name>
-    </ProjectReference>
+    <Content Include="Icon\key-lock-icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Icon\key-lock-icon.png" />
+    <ProjectReference Include="..\RSKKMS.Lib\RSKKMS.Lib.csproj">
+      <Project>{7ce7bb34-4fe9-4a0c-8d14-b92bb833a1af}</Project>
+      <Name>RSKKMS.Lib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
