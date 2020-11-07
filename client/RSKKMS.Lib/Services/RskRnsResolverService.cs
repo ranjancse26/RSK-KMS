@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Nethereum.Web3;
 using Nethereum.Hex.HexConvertors.Extensions;
 using System.Configuration;
-using Nethereum.ENS.ENSRegistry.ContractDefinition;
 using Nethereum.ENS;
+using Nethereum.ENS.ENSRegistry.ContractDefinition;
 
 namespace RSKKMS.Lib.Services
 {
@@ -60,7 +60,7 @@ namespace RSKKMS.Lib.Services
             }
             catch(Exception ex)
             {
-                return null;
+                throw;
             }
         }
 

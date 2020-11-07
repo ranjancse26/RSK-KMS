@@ -1,20 +1,36 @@
 ﻿using System.Configuration;
-using RSKKMS.Lib.KeyManagement;
+using System.Numerics;
+using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 
 using Nethereum.Web3;
 using Nethereum.RPC.Eth.DTOs;
-using RSKKMS.Lib.Security;
 using Nethereum.Contracts.ContractHandlers;
-using System.Diagnostics;
-using Nethereum.Util;
+using RSKKMS.Lib.Security;
 using RSKKMS.Lib.Services;
-using System.Numerics;
+using RSKKMS.Lib.KeyManagement;
 
 namespace RSKKMS.Console
 {
     class Program
     {
+        /// <summary>
+        /// Load some RBTC
+        /// </summary>
+        /// <param name="nodeUrl">Node Url</param>
+        /// <param name="privateKey">Private Key</param>
+        /// <param name="address">Address</param>
+        /// <param name="amount">Amount</param>
+        /// <param name="gas">Gas</param>
+        private static void LoadSomeRBTC(string nodeUrl,
+            string privateKey, string address,
+            decimal amount,
+            decimal gas)
+        {
+            IRskService rskService = new RskService(nodeUrl, privateKey);
+            rskService.SendTransaction(address, amount, gas);
+        }
+
         /// <summary>
         /// The AES Key/Value with the Private Key for Contract is for demonstration purpose only
         /// Feel free to use it.
@@ -23,11 +39,19 @@ namespace RSKKMS.Console
         public static void Main(string[] args)
         {
             string key = "aesKey";
-            string value = "testing";
-
+            string value = "testing"; 
+            
             string nodeUrl = ConfigurationManager.AppSettings["RskTestnetNodeUrl"];
+            var privateKey = ConfigurationManager.AppSettings["PrivateKey"];
+            var fromTransferPrivateKey = ConfigurationManager.AppSettings["FromTransferPrivateKey"]; 
+            var account = new Nethereum.Web3.Accounts.Account(privateKey);
+
             IGasPriceService gasPriceService = new GasPriceService(nodeUrl);
             int gasPrice = gasPriceService.GetRskMinGasPrice();
+
+            // Load some RBTC
+            LoadSomeRBTC(nodeUrl, fromTransferPrivateKey,
+                account.Address, 0.001m, 0.06m);
 
             Stopwatch stopwatch = new Stopwatch();
 
@@ -50,8 +74,6 @@ namespace RSKKMS.Console
             var encryptedText = RSAEncryptionHelper.Encrypt(value, filteredCert);
 
             var url = ConfigurationManager.AppSettings["ContractDeploymentUrl"];
-            var privateKey = ConfigurationManager.AppSettings["PrivateKey"]; ;
-            var account = new Nethereum.Web3.Accounts.Account(privateKey);
             Web3 web3 = new Web3(account, url);
 
             // Get the balance
