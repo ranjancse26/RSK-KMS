@@ -1,11 +1,12 @@
-﻿using System.Configuration;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Diagnostics;
+using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
 
 using Nethereum.Web3;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Contracts.ContractHandlers;
+
 using RSKKMS.Lib.Security;
 using RSKKMS.Lib.Services;
 using RSKKMS.Lib.KeyManagement;
@@ -15,23 +16,6 @@ namespace RSKKMS.Console
     class Program
     {
         /// <summary>
-        /// Load some RBTC
-        /// </summary>
-        /// <param name="nodeUrl">Node Url</param>
-        /// <param name="privateKey">Private Key</param>
-        /// <param name="address">Address</param>
-        /// <param name="amount">Amount</param>
-        /// <param name="gas">Gas</param>
-        private static void LoadSomeRBTC(string nodeUrl,
-            string privateKey, string address,
-            decimal amount,
-            decimal gas)
-        {
-            IRskService rskService = new RskService(nodeUrl, privateKey);
-            rskService.SendTransaction(address, amount, gas);
-        }
-
-        /// <summary>
         /// The AES Key/Value with the Private Key for Contract is for demonstration purpose only
         /// Feel free to use it.
         /// </summary>
@@ -39,8 +23,10 @@ namespace RSKKMS.Console
         public static void Main(string[] args)
         {
             string key = "aesKey";
-            string value = "testing"; 
-            
+            string value = "testing";
+
+            string rnsResolvedAddress = GetRnsResolvedAddress("ranjancse.rsk", true);
+
             string nodeUrl = ConfigurationManager.AppSettings["RskTestnetNodeUrl"];
             var privateKey = ConfigurationManager.AppSettings["PrivateKey"];
             var fromTransferPrivateKey = ConfigurationManager.AppSettings["FromTransferPrivateKey"]; 
@@ -172,6 +158,41 @@ namespace RSKKMS.Console
 
             System.Console.WriteLine("Press any key to exit");
             System.Console.ReadLine();
+        }
+
+
+        /// <summary>
+        /// Load some RBTC
+        /// </summary>
+        /// <param name="nodeUrl">Node Url</param>
+        /// <param name="privateKey">Private Key</param>
+        /// <param name="address">Address</param>
+        /// <param name="amount">Amount</param>
+        /// <param name="gas">Gas</param>
+        private static void LoadSomeRBTC(string nodeUrl,
+            string privateKey, string address,
+            decimal amount,
+            decimal gas)
+        {
+            IRskService rskService = new RskService(nodeUrl, privateKey);
+            rskService.SendTransaction(address, amount, gas);
+        }
+
+        /// <summary>
+        /// Get the Rns Resolved Address
+        /// </summary>
+        /// <param name="rnsAddress">RNS Address</param>
+        /// <returns>Hex Address</returns>
+        private static string GetRnsResolvedAddress(string rnsAddress,
+            bool isTestNet)
+        {
+            IRskRnsResolverService rskRnsResolverService = new RskRnsResolverService(isTestNet);
+            string resolvedAddress = rskRnsResolverService
+                .GetAddress(rnsAddress)
+                .ConfigureAwait(false)
+                .GetAwaiter()
+                .GetResult();
+            return resolvedAddress;
         }
     }
 }

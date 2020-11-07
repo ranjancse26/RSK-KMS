@@ -10,7 +10,7 @@ namespace RSKKMS.Lib.Services
 {
     public interface IRskRnsResolverService
     {
-        Task<string> GetAddress(string accountDomain, bool isTestNet);
+        Task<string> GetAddress(string accountDomain);
     }
 
     /// <summary>
@@ -19,6 +19,7 @@ namespace RSKKMS.Lib.Services
     /// </summary>
     public class RskRnsResolverService : IRskRnsResolverService
     {
+        private bool isTestNet;
         private static string RskMainnetNodeUrl { get; } = ConfigurationManager.AppSettings["RskMainnetNodeUrl"].ToString();
         private string RnsMainNetRegistry { get; } = ConfigurationManager.AppSettings["RnsMainNetRegistry"].ToString();
 
@@ -29,6 +30,7 @@ namespace RSKKMS.Lib.Services
 
         public RskRnsResolverService(bool isTestNet)
         {
+            this.isTestNet = isTestNet;
             Web3Client = isTestNet ? 
                 new Web3(RskTestnetNodeUrl) : 
                 new Web3(RskMainnetNodeUrl);
@@ -39,7 +41,7 @@ namespace RSKKMS.Lib.Services
             Web3Client = web3Client;
         }
 
-        public async Task<string> GetAddress(string accountDomain, bool isTestNet)
+        public async Task<string> GetAddress(string accountDomain)
         {
             if (!IsValidDomain(accountDomain)) throw new ArgumentException("Invalid name.", nameof(accountDomain));
             
