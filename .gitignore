@@ -2,3 +2,8 @@ node_modules
 /coverage
 /types
 /build/contracts
+/client/RSKKMS.Console/packages
+/client/RSKKMS.Console/obj/Debug
+/client/RSKKMS.Console/bin/Debug
+/client/RSKKMS.WinForms/obj/Debug
+/client/RSKKMS.WinForms/bin/Debug

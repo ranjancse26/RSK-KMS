@@ -7,6 +7,9 @@ using Nethereum.RPC.Eth.DTOs;
 using RSKKMS.Lib.Security;
 using Nethereum.Contracts.ContractHandlers;
 using System.Diagnostics;
+using Nethereum.Util;
+using RSKKMS.Lib.Services;
+using System.Numerics;
 
 namespace RSKKMS.Console
 {
@@ -21,6 +24,10 @@ namespace RSKKMS.Console
         {
             string key = "aesKey";
             string value = "testing";
+
+            string nodeUrl = ConfigurationManager.AppSettings["RskTestnetNodeUrl"];
+            IGasPriceService gasPriceService = new GasPriceService(nodeUrl);
+            int gasPrice = gasPriceService.GetRskMinGasPrice();
 
             Stopwatch stopwatch = new Stopwatch();
 
@@ -56,6 +63,9 @@ namespace RSKKMS.Console
             System.Console.WriteLine($"Account Balance: {etherAmount}");
             System.Console.WriteLine($"Time take to fetch the balance:" +
                 $" {stopwatch.Elapsed.Seconds} seconds");
+
+            // Gas estimated, in wei
+            System.Console.WriteLine($"Estimated Gas Price: {gasPrice}");
 
             System.Console.WriteLine("Deploying the Iterable Mapping Library");
             stopwatch.Start();
@@ -97,13 +107,7 @@ namespace RSKKMS.Console
                 FromAddress = account.Address
             };
 
-            var estimate = contractHandler
-                .EstimateGasAsync(setItemRequest)
-                .ConfigureAwait(false)
-                .GetAwaiter()
-                .GetResult();
-
-            setItemRequest.Gas = estimate.Value;
+            setItemRequest.GasPrice = new BigInteger(gasPrice);
 
             stopwatch.Start();
             var setItemFunctionTxnReceipt = contractHandler

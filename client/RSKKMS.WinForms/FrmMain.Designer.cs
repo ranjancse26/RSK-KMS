@@ -47,6 +47,7 @@
             this.btnKMSGetItem = new System.Windows.Forms.Button();
             this.txtStoredKeyValue = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.btnRemove = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnDeploy
@@ -235,11 +236,24 @@
             this.label6.TabIndex = 17;
             this.label6.Text = "Stored Value:";
             // 
+            // btnRemove
+            // 
+            this.btnRemove.BackColor = System.Drawing.SystemColors.Highlight;
+            this.btnRemove.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRemove.ForeColor = System.Drawing.Color.White;
+            this.btnRemove.Location = new System.Drawing.Point(867, 721);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(257, 73);
+            this.btnRemove.TabIndex = 19;
+            this.btnRemove.Text = "KMS - Remove";
+            this.btnRemove.UseVisualStyleBackColor = false;
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1140, 863);
+            this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.txtStoredKeyValue);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.btnKMSGetItem);
@@ -288,6 +302,7 @@
         private System.Windows.Forms.Button btnKMSGetItem;
         private System.Windows.Forms.TextBox txtStoredKeyValue;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button btnRemove;
     }
 }
 
