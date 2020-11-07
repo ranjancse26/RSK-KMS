@@ -20,10 +20,10 @@ The RSK KMS (Key Management Service)
 4) truffle test 
 
   <img src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Test.PNG" 
-  data-canonical-src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Test.PNG" width="650" height="450" />
+  data-canonical-src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Test.PNG" width="650" height="530" />
 
 5) truffle migrate 
 
   <img src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Migrate.PNG" 
-  data-canonical-src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Migrate.PNG" width="650" height="450" />
+  data-canonical-src="https://github.com/ranjancse26/RSK-KMS/blob/main/images/Truffle-Migrate.PNG" width="650" height="550" />
 
