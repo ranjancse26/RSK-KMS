@@ -4,7 +4,10 @@ namespace UnitTestProject
 {
     public class BaseUnitTest
     {
-        public void SetConfiguration()
+        /// <summary>
+        /// Set up the initial configurations required for unit testing
+        /// </summary>
+        public void SetUpConfiguration()
         {
             ConfigurationManager.AppSettings["ContractDeploymentUrl"] = "https://public-node.testnet.rsk.co/2.0.1/";
             ConfigurationManager.AppSettings["FromTransferPrivateKey"] = "0xd35c0b08802b06da57a6f14175620280cd437b4dfc2a94926e226a369eb8c111";

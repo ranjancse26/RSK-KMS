@@ -11,7 +11,7 @@ namespace UnitTestProject
         [TestInitialize]
         public void Init()
         {
-            SetConfiguration();
+            SetUpConfiguration();
         }
 
         [TestMethod]

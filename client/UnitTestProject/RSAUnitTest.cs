@@ -16,7 +16,7 @@ namespace UnitTestProject
         [TestInitialize]
         public void Init()
         {
-            SetConfiguration();
+            SetUpConfiguration();
         }
 
         /// <summary>
@@ -34,7 +34,8 @@ namespace UnitTestProject
             const string KEY_FOOTER = "\n-----END RSA PRIVATE KEY-----";
 
             RSA rsa = RSA.Create();
-            var certRequest = new CertificateRequest("cn=test", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            var certRequest = new CertificateRequest("cn=test", rsa, 
+                HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
             // We're just going to create a temporary certificate, that won't be valid for long
             var certificate = certRequest.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddDays(1));
@@ -83,27 +84,31 @@ namespace UnitTestProject
 
             CreateCertificate(certFilename, keyFilename);
 
-            var cert = new X509Certificate2(File.ReadAllBytes(certFilename));
+            X509Certificate2 certWithPrivateKey = LoadWithPrivateCert();
 
+            string plainText = "testing";
+            string encryptedText = RSAEncryptionHelper.Encrypt(plainText,
+                certWithPrivateKey, RSAEncryptionAlgo.OaepSHA256);
+            string decryptedText = RSAEncryptionHelper.Decrypt(encryptedText,
+                certWithPrivateKey, RSAEncryptionAlgo.OaepSHA256);
+
+            Assert.IsTrue(encryptedText.Length > 0);
+            Assert.IsTrue(plainText == decryptedText);
+        }
+
+        private X509Certificate2 LoadWithPrivateCert()
+        {
+            var cert = new X509Certificate2(File.ReadAllBytes(certFilename));
             string privateKeyPem = File.ReadAllText(keyFilename);
 
             privateKeyPem = privateKeyPem.Replace("-----BEGIN RSA PRIVATE KEY-----", "");
             privateKeyPem = privateKeyPem.Replace("-----END RSA PRIVATE KEY-----", "");
 
             byte[] privateKeyBytes = Convert.FromBase64String(privateKeyPem);
-
-            using var rsa = RSA.Create();
+            var rsa = RSA.Create();
             rsa.ImportRSAPrivateKey(privateKeyBytes, out _);
-            var certWithPrivateKey = cert.CopyWithPrivateKey(rsa);
 
-            string plainText = "testing";
-            string encryptedText = RSAEncryptionHelper.Encrypt(plainText, 
-                certWithPrivateKey, RSAEncryptionAlgo.OaepSHA256);
-            string decryptedText = RSAEncryptionHelper.Decrypt(encryptedText, 
-                certWithPrivateKey, RSAEncryptionAlgo.OaepSHA256);
-
-            Assert.IsTrue(encryptedText.Length > 0);
-            Assert.IsTrue(plainText == decryptedText);
+            return cert.CopyWithPrivateKey(rsa);
         }
 
         [TestCleanup]
