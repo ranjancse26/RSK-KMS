@@ -1,5 +1,7 @@
 ﻿using RSKKMS.Lib.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Nethereum.Web3.Accounts;
+using System.Configuration;
 
 namespace UnitTestProject
 {
@@ -17,9 +19,11 @@ namespace UnitTestProject
         {
             // Arrange
             IRskWalletService rskWalletService = new RskWalletService(true);
-            
+            string privateKey = ConfigurationManager.AppSettings["PrivateKey"];
+            Account account = new Account(privateKey);
+
             // Act
-            decimal balance = rskWalletService.GetRskBalance("0x182bc5E65C957e05ECe67bfd76465F2dbc0eF36E");
+            decimal balance = rskWalletService.GetRskBalance(account.Address);
             
             // Assert
             Assert.IsTrue(balance > 0.0m);

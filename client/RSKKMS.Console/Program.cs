@@ -102,6 +102,7 @@ namespace RSKKMS.Console
                 transactionReceiptDeployment,
                 out contractAddress);
             stopwatch.Stop();
+            System.Console.WriteLine($"RSK Contract Address {contractAddress}");
             System.Console.WriteLine($"Time taken to deploy the RSK Contract: " +
                 $"{stopwatch.Elapsed.Seconds} seconds");
 
@@ -115,7 +116,7 @@ namespace RSKKMS.Console
                 FromAddress = account.Address
             };
 
-            setItemRequest.GasPrice = new BigInteger(gasPrice);
+            setItemRequest.GasPrice = new BigInteger(gasPrice * 1.1);
 
             stopwatch.Restart();
             var setItemFunctionTxnReceipt = contractHandler
