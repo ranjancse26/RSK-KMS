@@ -76,7 +76,7 @@ namespace RSKKMS.Console
             System.Console.WriteLine($"Estimated Gas Price: {gasPrice}");
 
             System.Console.WriteLine("Deploying the Iterable Mapping Library");
-            stopwatch.Start();
+            stopwatch.Restart();
 
             // Deploy Iterable Mapping Library
             TransactionReceipt transactionReceiptDeployment;
@@ -97,7 +97,7 @@ namespace RSKKMS.Console
             System.Console.WriteLine("Deploying the RSK KMS Contract");
 
             // Deploy the RSK Contract
-            stopwatch.Start();
+            stopwatch.Restart();
             contractHandler = RSKContractHelper.DeployRSKKeyManagmentContract(web3,
                 transactionReceiptDeployment,
                 out contractAddress);
@@ -117,7 +117,7 @@ namespace RSKKMS.Console
 
             setItemRequest.GasPrice = new BigInteger(gasPrice);
 
-            stopwatch.Start();
+            stopwatch.Restart();
             var setItemFunctionTxnReceipt = contractHandler
                 .SendRequestAndWaitForReceiptAsync(setItemRequest)
                 .ConfigureAwait(false)
@@ -136,7 +136,7 @@ namespace RSKKMS.Console
                 FromAddress = account.Address
             };
 
-            stopwatch.Start();
+            stopwatch.Restart();
             var getItemResponse = contractHandler
                 .QueryAsync<GetItemFunction, string>(getItemRequest)
                 .ConfigureAwait(false)
