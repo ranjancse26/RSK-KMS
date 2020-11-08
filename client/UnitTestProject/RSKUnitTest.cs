@@ -1,7 +1,7 @@
 ﻿using RSKKMS.Lib.Services;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Configuration;
 using Nethereum.Web3.Accounts;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestProject
 {

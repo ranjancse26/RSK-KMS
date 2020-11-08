@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace RSKKMS.Lib.Security
 {
-    public enum RSAEncryptionAlgo
+    public enum RSKEncryptionPadding
     {
         Pkcs1,
         OaepSHA256
@@ -17,9 +17,17 @@ namespace RSKKMS.Lib.Security
     */
     public static class RSAEncryptionHelper
     {
-       public static string Encrypt(string plainText, 
+        /// <summary>
+        /// Encrypt the plain text payload using the specified X509Certificate2
+        /// and the RSAEncryptionPadding
+        /// </summary>
+        /// <param name="plainText">Plain Text</param>
+        /// <param name="cert">X509 Certificate</param>
+        /// <param name="encryptionAlgo">Encryption Algo</param>
+        /// <returns>Encrypted Text</returns>
+        public static string Encrypt(string plainText, 
             X509Certificate2 cert,
-            RSAEncryptionAlgo encryptionAlgo = RSAEncryptionAlgo.Pkcs1)
+            RSKEncryptionPadding encryptionAlgo = RSKEncryptionPadding.Pkcs1)
         {
             byte[] encryptedBytes = null;
 
@@ -28,13 +36,13 @@ namespace RSKKMS.Lib.Security
 
             switch (encryptionAlgo)
             {
-                case RSAEncryptionAlgo.Pkcs1:
+                case RSKEncryptionPadding.Pkcs1:
                     encryptedBytes = publicKey.Encrypt(plainBytes,
-                        RSAEncryptionPadding.Pkcs1);
+                        System.Security.Cryptography.RSAEncryptionPadding.Pkcs1);
                     break;
-                case RSAEncryptionAlgo.OaepSHA256:
+                case RSKEncryptionPadding.OaepSHA256:
                     encryptedBytes = publicKey.Encrypt(plainBytes,
-                        RSAEncryptionPadding.OaepSHA256);
+                        System.Security.Cryptography.RSAEncryptionPadding.OaepSHA256);
                     break;
             }
             
@@ -42,9 +50,17 @@ namespace RSKKMS.Lib.Security
             return encryptedText;
         }
 
+        /// <summary>
+        /// Decrypt the specified Encrypted Text using the X509Certificate2
+        /// and the RSAEncryptionPadding 
+        /// </summary>
+        /// <param name="encryptedText"></param>
+        /// <param name="cert"></param>
+        /// <param name="encryptionAlgo"></param>
+        /// <returns></returns>
         public static string Decrypt(string encryptedText, 
             X509Certificate2 cert,
-            RSAEncryptionAlgo encryptionAlgo = RSAEncryptionAlgo.Pkcs1)
+            RSKEncryptionPadding encryptionAlgo = RSKEncryptionPadding.Pkcs1)
         {
             byte[] decryptedBytes = null;
 
@@ -53,13 +69,13 @@ namespace RSKKMS.Lib.Security
         
             switch (encryptionAlgo)
             {
-                case RSAEncryptionAlgo.Pkcs1:
+                case RSKEncryptionPadding.Pkcs1:
                     decryptedBytes = privateKey.Decrypt(encryptedBytes,
-                        RSAEncryptionPadding.Pkcs1);
+                        System.Security.Cryptography.RSAEncryptionPadding.Pkcs1);
                     break;
-                case RSAEncryptionAlgo.OaepSHA256:
+                case RSKEncryptionPadding.OaepSHA256:
                     decryptedBytes = privateKey.Decrypt(encryptedBytes,
-                        RSAEncryptionPadding.OaepSHA256);
+                        System.Security.Cryptography.RSAEncryptionPadding.OaepSHA256);
                     break;
             }
 

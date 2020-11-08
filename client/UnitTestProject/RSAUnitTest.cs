@@ -71,7 +71,7 @@ namespace UnitTestProject
 
             string plainText = "testing";
             string encryptedText = RSAEncryptionHelper.Encrypt(plainText,
-                x509, RSAEncryptionAlgo.OaepSHA256);
+                x509, RSKKMS.Lib.Security.RSKEncryptionPadding.OaepSHA256);
 
             Assert.IsTrue(encryptedText.Length > 0);
         }
@@ -88,9 +88,9 @@ namespace UnitTestProject
 
             string plainText = "testing";
             string encryptedText = RSAEncryptionHelper.Encrypt(plainText,
-                certWithPrivateKey, RSAEncryptionAlgo.OaepSHA256);
+                certWithPrivateKey, RSKKMS.Lib.Security.RSKEncryptionPadding.OaepSHA256);
             string decryptedText = RSAEncryptionHelper.Decrypt(encryptedText,
-                certWithPrivateKey, RSAEncryptionAlgo.OaepSHA256);
+                certWithPrivateKey, RSKKMS.Lib.Security.RSKEncryptionPadding.OaepSHA256);
 
             Assert.IsTrue(encryptedText.Length > 0);
             Assert.IsTrue(plainText == decryptedText);
