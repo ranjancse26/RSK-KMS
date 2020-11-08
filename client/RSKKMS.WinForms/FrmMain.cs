@@ -299,5 +299,10 @@ namespace RSKKMS.WinForms
         {
             btnKMSGetItem.Enabled = true;
         }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

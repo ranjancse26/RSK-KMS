@@ -247,6 +247,7 @@
             this.btnRemove.TabIndex = 19;
             this.btnRemove.Text = "KMS - Remove";
             this.btnRemove.UseVisualStyleBackColor = false;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
             // FrmMain
             // 

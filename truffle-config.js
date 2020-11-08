@@ -63,10 +63,19 @@ module.exports = {
       port: 7545
     },   
     rskTestnet: {
-       provider: () => new HDWalletProvider(mnemonic, 
-         'https://public-node.testnet.rsk.co'),
-       network_id: 31,
-       gasPrice: 60000000
+       provider: () => new HDWalletProvider({
+        mnemonic: {
+          phrase: testnetSeedPhrase,
+        },
+        providerOrUrl: 'https://public-node.testnet.rsk.co/2.0.1/',
+        // Higher polling interval to check for blocks less frequently
+        pollingInterval: 10e3,
+      }),
+      // Ref: http://developers.rsk.co/rsk/architecture/account-based/#chainid
+      network_id: 31,
+      gasPrice: Math.floor(minimumGasPriceTestnet * TESTNET_GAS_MULT),
+      networkCheckTimeout: 1e6,
+      timeoutBlocks: 100,
     },
     regtest: {
       host: '127.0.0.1',
