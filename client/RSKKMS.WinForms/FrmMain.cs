@@ -12,6 +12,7 @@ using Nethereum.Contracts.ContractHandlers;
 
 using RSKKMS.Lib.Security;
 using RSKKMS.Lib.KeyManagement;
+using System.Threading;
 
 namespace RSKKMS.WinForms
 {
@@ -31,11 +32,15 @@ namespace RSKKMS.WinForms
 
         private void btnDeploy_Click(object sender, System.EventArgs e)
         {
+            StartProgressBar();
+
             string kmsContractAddress = DeployContract();
             if (!string.IsNullOrEmpty(kmsContractAddress))
                 MessageBox.Show("The KMS Contract Deployment was successful!", "Info",
                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             txtKMSContractAddress.Text = kmsContractAddress;
+
+            StopProgressBar();
         }
 
         private void LoadCertificate()
@@ -99,6 +104,8 @@ namespace RSKKMS.WinForms
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
+            this.MaximizeBox = false;
+            progressBar1.Visible = false;
             btnKMSGetItem.Enabled = false;
 
             listView1.Columns.Add("Keyname", 100);
@@ -110,7 +117,6 @@ namespace RSKKMS.WinForms
             listView1.FullRowSelect = true;
 
             btnDeploy.Enabled = false;
-            this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
             txtCertificateThumbprint.Text = thumbPrint;
 
@@ -119,16 +125,34 @@ namespace RSKKMS.WinForms
 
         private void btnEtherAmount_Click(object sender, EventArgs e)
         {
+            StartProgressBar();
+
             Web3 web3 = GetWeb3();
 
             var account = new Nethereum.Web3.Accounts.Account(privateKey);
             var weiBalance = AccountHelper.GetBalance(web3, account);
             var etherAmount = Web3.Convert.FromWei(weiBalance.Value);
-            
+
             txtEtherAmount.Text = etherAmount.ToString();
 
             decimal balanceInDecimal = decimal.Parse(txtEtherAmount.Text.Trim());
             btnDeploy.Enabled = balanceInDecimal > 0;
+
+            StopProgressBar();
+        }
+
+        private void StartProgressBar()
+        {
+            progressBar1.Visible = true;
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            progressBar1.MarqueeAnimationSpeed = 30;
+        }
+
+        private void StopProgressBar()
+        {
+            progressBar1.Visible = false;
+            progressBar1.Style = ProgressBarStyle.Continuous;
+            progressBar1.MarqueeAnimationSpeed = 0;
         }
 
         private void btnLoadCertificate_Click(object sender, EventArgs e)
@@ -181,6 +205,8 @@ namespace RSKKMS.WinForms
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            
+            StartProgressBar();
 
             btnKMSSetItem.Enabled = false;
             var encryptedText = RSAEncryptionHelper.Encrypt(txtValue.Text.Trim(), filteredCert);
@@ -215,6 +241,8 @@ namespace RSKKMS.WinForms
             }
 
             btnKMSSetItem.Enabled = true;
+
+            StopProgressBar();
         }
 
         private async void btnKMSGetItem_Click(object sender, EventArgs e)
@@ -227,6 +255,8 @@ namespace RSKKMS.WinForms
                   MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            StartProgressBar();
 
             if (selectedItem.Count > 0)
             {
@@ -256,6 +286,8 @@ namespace RSKKMS.WinForms
                 var decryptedText = RSAEncryptionHelper.Decrypt(encryptedText, filteredCert);
                 txtStoredKeyValue.Text = decryptedText;
             }
+
+            StopProgressBar();
         }
 
         /// <summary>

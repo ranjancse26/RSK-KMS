@@ -48,6 +48,7 @@
             this.txtStoredKeyValue = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.btnRemove = new System.Windows.Forms.Button();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // btnDeploy
@@ -149,7 +150,7 @@
             this.listView1.Location = new System.Drawing.Point(22, 503);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(826, 348);
+            this.listView1.Size = new System.Drawing.Size(826, 284);
             this.listView1.TabIndex = 9;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
@@ -241,7 +242,7 @@
             this.btnRemove.BackColor = System.Drawing.SystemColors.Highlight;
             this.btnRemove.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRemove.ForeColor = System.Drawing.Color.White;
-            this.btnRemove.Location = new System.Drawing.Point(867, 721);
+            this.btnRemove.Location = new System.Drawing.Point(867, 714);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(257, 73);
             this.btnRemove.TabIndex = 19;
@@ -249,11 +250,20 @@
             this.btnRemove.UseVisualStyleBackColor = false;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(24, 793);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(824, 36);
+            this.progressBar1.TabIndex = 20;
+            this.progressBar1.Value = 100;
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1140, 863);
+            this.ClientSize = new System.Drawing.Size(1140, 885);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.txtStoredKeyValue);
             this.Controls.Add(this.label6);
@@ -304,6 +314,7 @@
         private System.Windows.Forms.TextBox txtStoredKeyValue;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 
