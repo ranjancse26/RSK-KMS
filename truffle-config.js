@@ -1,43 +1,13 @@
-// See <http://truffleframework.com/docs/advanced/configuration>
-// to customize your Truffle configuration!
+  
 const fs = require('fs');
-const HDWalletProvider = require('@truffle/hdwallet-provider');
+const path = require('path');
 
-const mnemonic = fs.readFileSync(".secret").toString().trim();
-  if (!mnemonic || mnemonic.split(' ').length !== 12) {
-    console.log('unable to retrieve mnemonic from .secret');
-}
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 // adjust these as fit to get faster transaction speeds
 // minimum value is 1.0, adjust higher to incentivise miners
 const TESTNET_GAS_MULT = 1.1;
 const MAINNET_GAS_MULT = 1.0;
-
-//Update gas price Testnet
-/* Run this first, to use the result in truffle-config:
-  curl https://public-node.testnet.rsk.co/ -X POST -H "Content-Type: application/json" \
-    --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest",false],"id":1}' \
-    > .minimum-gas-price-testnet.json
-*/
-const gasPriceTestnetRaw = fs.readFileSync(".minimum-gas-price-testnet.json").toString().trim();
-const minimumGasPriceTestnet = parseInt(JSON.parse(gasPriceTestnetRaw).result.minimumGasPrice, 16);
-if (typeof minimumGasPriceTestnet !== 'number' || isNaN(minimumGasPriceTestnet)) {
-  throw new Error('unable to retrieve network gas price from .gas-price-testnet.json');
-}
-console.log("Minimum gas price Testnet: " + minimumGasPriceTestnet);
-
-//Update gas price Mainnet
-/* Run this first, to use the result in truffle-config:
-  curl https://public-node.rsk.co/ -X POST -H "Content-Type: application/json" \
-    --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest",false],"id":1}' \
-    > .minimum-gas-price-mainnet.json
-*/
-const gasPriceMainnetRaw = fs.readFileSync(".minimum-gas-price-mainnet.json").toString().trim();
-const minimumGasPriceMainnet = parseInt(JSON.parse(gasPriceMainnetRaw).result.minimumGasPrice, 16);
-if (typeof minimumGasPriceMainnet !== 'number' || isNaN(minimumGasPriceMainnet)) {
-  throw new Error('unable to retrieve network gas price from .gas-price-mainnet.json');
-}
-console.log("Minimum gas price Mainnet: " + minimumGasPriceMainnet);
 
 const testnetSeedPhrase = fs
   .readFileSync('.testnet.seed-phrase')
@@ -47,23 +17,39 @@ if (!testnetSeedPhrase || testnetSeedPhrase.split(' ').length !== 12) {
   throw new Error('unable to retrieve testnet seed phrase from .testnet.seed-phrase');
 }
 
-module.exports = {
-  /**
-   * Networks define how you connect to your ethereum client and let you set the
-   * defaults web3 uses to send transactions. If you don't specify one truffle
-   * will spin up a development blockchain for you on port 9545 when you
-   * run `develop` or `test`. You can ask a truffle command to use a specific
-   * network from the command line, e.g
-   *
-   * $ truffle test --network <network-name>
-   */
+// NOTE Depending on your security requirements this is (most) likely insufficient.
+// Please consider replacing/ overriding this to suit your needs on Mainnet.
+const mainnetSeedPhrase = process.env.RSK_MAINNET_SEED_PHRASE || '';
 
+const gasPriceTestnetRaw = fs
+  .readFileSync('.testnet.gas-price.json')
+  .toString()
+  .trim();
+const gasPriceTestnet = parseInt(JSON.parse(gasPriceTestnetRaw).result, 16);
+if (typeof gasPriceTestnet !== 'number' || isNaN(gasPriceTestnet)) {
+  throw new Error('unable to retrieve testnet gas price from .testnet.gas-price.json');
+}
+
+const gasPriceMainnetRaw = fs
+  .readFileSync('.mainnet.gas-price.json')
+  .toString()
+  .trim();
+const gasPriceMainnet = parseInt(JSON.parse(gasPriceMainnetRaw).result, 16);
+if (typeof gasPriceMainnet !== 'number' || isNaN(gasPriceMainnet)) {
+  throw new Error('unable to retrieve mainnet gas price from .mainnet.gas-price.json');
+}
+
+module.exports = {
   networks: {
-    develop: {
-      port: 7545
-    },   
-    rskTestnet: {
-       provider: () => new HDWalletProvider({
+    regtest: {
+      // Use default provider, Regtest starts with unlocked accounts
+      host: '127.0.0.1',
+      port: 4444,
+      network_id: 33,
+      networkCheckTimeout: 1e3,
+    },
+    testnet: {
+      provider: () => new HDWalletProvider({
         mnemonic: {
           phrase: testnetSeedPhrase,
         },
@@ -73,49 +59,61 @@ module.exports = {
       }),
       // Ref: http://developers.rsk.co/rsk/architecture/account-based/#chainid
       network_id: 31,
-      gasPrice: Math.floor(minimumGasPriceTestnet * TESTNET_GAS_MULT),
+      gasPrice: Math.floor(gasPriceTestnet * TESTNET_GAS_MULT),
       networkCheckTimeout: 1e6,
       timeoutBlocks: 100,
     },
-    regtest: {
-      host: '127.0.0.1',
-      port: 4444,
-      network_id: 31,
-      networkCheckTimeout: 1e3
-    }, 
     localtestnet: {
-      provider: () => new HDWalletProvider(
-        mnemonic,
-        'http://localhost:7777/',
-      ),
+      provider: () => new HDWalletProvider({
+        mnemonic: {
+          phrase: testnetSeedPhrase,
+        },
+        providerOrUrl: 'http://localhost:7777/',
+        // Default polling interval when running your own node
+      }),
       network_id: 31,
-      gasPrice: Math.floor(minimumGasPriceTestnet * TESTNET_GAS_MULT),
+      gasPrice: Math.floor(gasPriceTestnet * TESTNET_GAS_MULT),
       networkCheckTimeout: 10e3,
+      timeoutBlocks: 100,
     },
     mainnet: {
-      provider: () => new HDWalletProvider(mnemonic, 'https://public-node.rsk.co', 0, 1, true, "m/44'/137'/0'/0/"),
+      // NOTE that this configuration is a template.
+      // You should modify it according to your needs and security requirements.
+      provider: () => new HDWalletProvider({
+        mnemonic: {
+          phrase: mainnetSeedPhrase,
+        },
+        providerOrUrl: 'https://public-node.rsk.co/2.0.1/',
+        // Higher polling interval to check for blocks less frequently
+        pollingInterval: 10e3,
+      }),
+      // Ref: http://developers.rsk.co/rsk/architecture/account-based/#chainid
       network_id: 30,
-      gasPrice: Math.floor(minimumGasPriceMainnet * 1.02),
-      networkCheckTimeout: 1e9
+      gasPrice: Math.floor(gasPriceMainnet * MAINNET_GAS_MULT),
+      networkCheckTimeout: 10e3,
+      timeoutBlocks: 100,
     },
-    testnet: {
-      provider: () => new HDWalletProvider(
-        testnetSeedPhrase,
-        'https://public-node.testnet.rsk.co/2.0.1/',
-      ),
-      network_id: 31,
-      gasPrice: Math.floor(minimumGasPriceTestnet * 1.1),
-      networkCheckTimeout: 1e9
+    localmainnet: {
+      // NOTE that this configuration is a template.
+      // You should modify it according to your needs and security requirements.
+      provider: () => new HDWalletProvider({
+        mnemonic: {
+          phrase: mainnetSeedPhrase,
+        },
+        providerOrUrl: 'http://localhost:8888/',
+        // Default polling interval when running your own node
+      }),
+      // Ref: http://developers.rsk.co/rsk/architecture/account-based/#chainid
+      network_id: 30,
+      gasPrice: Math.floor(gasPriceMainnet * MAINNET_GAS_MULT),
+      networkCheckTimeout: 10e3,
+      timeoutBlocks: 100,
+    },
+  },
+  compilers: {
+    solc: {
+      version: '0.6.2',
     }
   },
-
-  // Set default mocha options here, use special reporters etc.
-  mocha: {  },
-
-  // Configure your compilers
-  compilers: {  
-    solc: {
-      version: "0.6.2"
-    }
-  }
+  contracts_build_directory: path.join(__dirname, 'build/contracts'),
 }
